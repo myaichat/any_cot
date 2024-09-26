@@ -1,7 +1,7 @@
 # any_cot
 Chain of Thought implementation using different API vendors
 
-inspiration: https://medium.com/@odhitom09/llamaberry-unlocking-advanced-chain-of-thought-in-ai-reasoning-85ac71f0e839
+inspiration: https://github.com/Jaimboh/Llamaberry-Chain-of-Thought-Reasoning-in-AI
 
 ### Groq test
 
