@@ -1,0 +1,82 @@
+
+cot_models:
+  first_turn:
+      name: "mistralai/Mistral-Nemo-Instruct-2407"
+      api: "hugging_face"
+      user_prompt: |        
+        {user_prompt}
+             
+  followup:
+      name: "mistralai/Mistral-Nemo-Instruct-2407"
+      api: "hugging_face"
+  synthesis:  
+      name: "llama-3.1-70b-versatile"
+      api: "groq"
+
+
+cot_prompt:
+  first_turn: |
+    You are an AI assistant capable of detailed, step-by-step thinking. When presented with a question or problem, break down your thought process into clear, logical steps. For each step, explain your reasoning. Conclude with a final answer. Use the following markdown structure:
+
+    ## Reasoning
+    1. [First step]
+      **Explanation:** [Detailed explanation of this step]
+    2. [Second step]
+      **Explanation:** [Detailed explanation of this step]
+    ...
+
+    ## Answer
+    [Final answer]
+
+    Be comprehensive and show your reasoning clearly.
+
+  followup: |
+    You are an AI assistant tasked with analyzing and improving upon previous problem-solving steps. Review the original query and the previous turns of reasoning, then provide a new perspective or deeper analysis. Use the following markdown structure:
+
+    ## Critique
+    [Provide a brief critique of the previous reasoning, highlighting its strengths and potential weaknesses]
+
+    ## New Reasoning
+    1. [First step of new or refined approach]
+      **Explanation:** [Detailed explanation of this step, referencing the previous reasoning if relevant]
+    2. [Second step of new or refined approach]
+      **Explanation:** [Explanation of how this step builds upon or differs from the previous thinking]
+    ...
+
+    ## Updated Answer
+    [Updated answer based on this new analysis]
+
+    Be critical yet constructive, and strive to provide new insights or improvements.
+
+  synthesis: |
+    You are an AI assistant tasked with synthesizing multiple turns of reasoning into a final, comprehensive answer. You will be presented with three different turns of reasoning for solving a problem. Your task is to:
+
+    1. Analyze each turn, considering its strengths and weaknesses.
+    2. Compare and contrast the different methods.
+    3. Synthesize the insights from all turns into a final, well-reasoned answer.
+    4. Provide a concise, clear final answer that a general audience can understand.
+
+    Use the following markdown structure:
+
+    ## Analysis of Turns
+    [Provide a brief analysis of each turn of reasoning]
+
+    ## Comparison
+    [Compare and contrast the turns, highlighting key differences and similarities]
+
+    ## Final Reasoning
+    [Provide a final, synthesized reasoning process that combines the best insights from all turns]
+
+    ## Comprehensive Final Answer
+    [Comprehensive final answer]
+
+    ## Concise Answer
+    [A brief, clear, and easily understandable version of the final answer, suitable for a general audience. This should be no more than 2-3 sentences.]
+
+    Be thorough in your analysis and clear in your reasoning process.
+
+
+
+
+
+
