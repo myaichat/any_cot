@@ -1,4 +1,4 @@
-import  sys, json, codecs
+import os, sys, json, codecs
 import re
 from datetime import datetime
 from os.path import join
@@ -133,15 +133,21 @@ class Config(object):
 		self.dump_file={}
 		self.cfg={}
 		self.mta=set()
-		
-		
-
+		self.clients={}
+		self.apis={}
 		# Get the current timestamp
 		timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-
-
 		self.prompt_log = self.get_attr('prompt_log',{},join('log',f'.prompt_log_{timestamp}.json'))
+
+	def get_client (self,api):
+		clients=self.clients
+		if api not in clients:
+			client_api = self.apis[api].AsyncClient
+			api_key = os.getenv(f"{api.upper()}_API_KEY")
+			assert api_key, f"API key for '{api.upper()}_API_KEY' not found"
+			clients[api] =  client_api(api_key)
+
+		return clients[api]
 
 	def process(self, attr_name, value):
 			#print   ('-----Processing:', attr_name, value)

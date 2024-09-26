@@ -1,17 +1,17 @@
 
 cot_models:
   first_turn:
-      name: "llama-3.1-70b-versatile"
-      api: "groq"
+      name: "mistralai/Mistral-Nemo-Instruct-2407"
+      api: "hugging_face"
       user_prompt: |        
         {user_prompt}
         return a detailed description of updated  image prompt in <fused_image> tags.      
   followup:
-      name: "llama-3.1-70b-versatile"
-      api: "groq"
+      name: "mistralai/Mistral-Nemo-Instruct-2407"
+      api: "hugging_face"
   synthesis:  
-      name: "llama-3.1-70b-versatile"
-      api: "groq"
+      name: "mistralai/Mistral-Nemo-Instruct-2407"
+      api: "hugging_face"
 
 
 cot_prompt:
@@ -74,6 +74,9 @@ cot_prompt:
     [A brief, clear, and easily understandable version of the final answer, suitable for a general audience. This should be no more than 2-3 sentences.]
 
     Be thorough in your analysis and clear in your reasoning process.
+
+
+
 
 
 

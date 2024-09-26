@@ -19,7 +19,7 @@ import include.api.groq as groq
 #import include.api.mistral as mistral
 #import include.api.nvidia as nvidia
 #import include.api.deepseek as deepseek
-#import include.api.hugging_face as hugging_face
+import include.api.hugging_face as hugging_face
 #import include.api.anthropic as anthropic
 #import include.api.gemini as gemini
 #import include.api.cohere as cohere
@@ -38,6 +38,9 @@ async def close_clients():
 
 def save_models(cot_models):   
     apc.cot_models=cot_models 
+    for type, model in cot_models.items():
+        api=model['api']
+        apc.apis[api]=globals()[api]
 
 def save_prompt(cot_prompt):   
     apc.cot_prompt=cot_prompt 
@@ -51,6 +54,60 @@ def get_prompt(model_prompt, user_prompt):
 
 
 
+
+async def generate_turn(query: str, previous_turns: list = None) -> str:
+    """Generate a single turn of reasoning, considering previous turns if available."""
+    is_first_turn = previous_turns is None or len(previous_turns) == 0
+    cot_model=None
+    if is_first_turn:
+        cot_model=apc.cot_models['first_turn']
+        api=cot_model['api']
+        initial_system_prompt = apc.cot_prompt['first_turn']
+        messages = [{
+            "role": "system",
+            "content": initial_system_prompt
+        }, {
+            "role": "user",
+            "content": query
+        }]
+    else:
+        cot_model=apc.cot_models['followup']
+        api=cot_model['api']
+        followup_system_prompt = apc.cot_prompt['followup']
+        previous_content = "\n\n".join(previous_turns)
+        messages = [{
+            "role": "system",
+            "content": followup_system_prompt
+        }, {
+            "role":
+            "user",
+            "content":
+            f"Original Query: {query}\n\nPrevious Turns:\n{previous_content}\n\nProvide the next turn of reasoning."
+        }]
+    assert cot_model, f"No cot_model found for {is_first_turn}" 
+    return await apc.apis[api].call_llm(cot_model, messages)
+
+
+async def synthesize_turns( query: str, turns: list) -> str:
+    """Synthesize multiple turns of reasoning into a final answer."""
+    turns_text = "\n\n".join(
+        [f"Turn {i+1}:\n{turn}" for i, turn in enumerate(turns)])
+    synthesis_prompt = apc.cot_prompt['synthesis']
+    api=apc.cot_models['synthesis']['api']
+    messages = [{
+        "role": "system",
+        "content": synthesis_prompt
+    }, {
+        "role":
+        "user",
+        "content":
+        f"Original Query: {query}\n\nTurns of Reasoning:\n{turns_text}"
+    }]
+    cot_model=apc.cot_models['synthesis']
+
+    return await apc.apis[api].call_llm(cot_model,messages)
+
+
 async def full_cot_reasoning(query: str) -> tuple:
     """Perform full Chain of Thought reasoning with multiple turns."""
     start_time = time.time()
@@ -60,13 +117,13 @@ async def full_cot_reasoning(query: str) -> tuple:
     if 1:
         for i in range(3):  # Generate 3 turns of reasoning
             turn_start = time.time()
-            turn = await groq.generate_turn(query, turns)
+            turn = await generate_turn(query, turns)
             turns.append(turn)
             turn_times.append(time.time() - turn_start)
             full_output += f"## Turn {i+1}\n{turn}\n\n"
 
     mid_time = time.time()
-    synthesis = await groq.synthesize_turns(query, turns)
+    synthesis = await synthesize_turns(query, turns)
     
     full_output += f"## Synthesis\n{synthesis}\n\n"
     end_time = time.time()
@@ -101,7 +158,7 @@ def main(yaml_file_path):
             apc.pipeline = data = yaml.safe_load(file)
             apc.prompt_log['pipeline']=apc.pipeline
             
-            
+        apc.prompt_log['cot_models']={}    
         #pp(data)
         if cot_models := data.get('cot_models', None  ):
             save_models(cot_models)
@@ -119,7 +176,7 @@ def main(yaml_file_path):
 
         try:
             while True:
-                print()
+
                 default_prompt="Justify importance of number 42"
                 user_prompt = input(f"Enter your prompt ({default_prompt}): ")
                 if not user_prompt:
@@ -127,12 +184,20 @@ def main(yaml_file_path):
 
 
                 apc.prompt_log['pipeline']['user_prompt']=user_prompt
+                cot_model_prompt=apc.cot_models['first_turn'].get('user_prompt', None)
+                if cot_model_prompt:
+                      
+                    parsed_user_prompt = get_prompt(cot_model_prompt, user_prompt)
+                else:
+                    parsed_user_prompt=user_prompt
+
+                apc.prompt_log['pipeline']['parsed_user_prompt']=parsed_user_prompt
                 results={}
 
 
 
                 """Wrapper to run the full CoT reasoning and display results."""
-                out = await full_cot_reasoning(user_prompt)
+                out = await full_cot_reasoning(parsed_user_prompt)
 
 
                 print()

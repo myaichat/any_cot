@@ -140,8 +140,7 @@ async def full_cot_reasoning(query: str) -> tuple:
         turns.append(turn)
         turn_times.append(time.time() - turn_start)
         full_output += f"## Turn {i+1}\n{turn}\n\n"
-    pp(turns)
-    e()
+
     mid_time = time.time()
     synthesis = await synthesize_turns(query, turns)
     full_output += f"## Synthesis\n{synthesis}\n\n"
@@ -191,5 +190,13 @@ incorporate ukrainian flag  this image prompt, make it look like a vintage  post
 return a detailed description of updated  image prompt in <fused_image> tags.
 Input Image prompt:
 soft anime-style digital illustration, young girl with hair bun sitting on brick wall (hex #B15E3D) under large leafy tree, girl wearing oversized striped sweater and knee-high socks, five cute cats of different colors surrounding her, pastel blue sky (hex #E6F3F7) with fluffy white clouds, vibrant green foliage (hex #8DC63F) with dappled sunlight effect, warm summer day atmosphere, watercolor texture throughout, soft shadows and highlights, no outlines, dreamy and peaceful mood, inspired by Studio Ghibli art style, highly detailed cat expressions and fur textures, subtle brick texture on wall, gentle color gradients in sky and foliage, balanced composition with girl as focal point
+"""
+
+    query = """
+add ukrainian essence to this image prompt preserving its artistic essence
+return a detailed description of updated  image prompt in <fused_image> tags.
+Input Image prompt:
+
+A woman with long dark hair and bangs wears an orange mask made of horizontal stripes on her face, in the style of John Holcroft, collage art print in the style of halftone print, minimalism, with purple, blue, pink, and orange tones, portrait close-up.
 """
     print(main(query))
