@@ -4,6 +4,11 @@ import yaml
 import click
 from pprint import pprint as pp
 from os.path import join
+from rich.console import Console
+from rich.panel import Panel
+from rich.syntax import Syntax
+from rich.markdown import Markdown
+
 #from  include.api.deepinfra import AsyncClient, get_final_stream
 import include.config.init_config as init_config 
 
@@ -29,7 +34,7 @@ e=sys.exit
 
 apc.clients={}
 
-
+console = Console()
        
 async def close_clients():
 
@@ -185,6 +190,9 @@ def main(yaml_file_path):
 
                 apc.prompt_log['pipeline']['user_prompt']=user_prompt
                 cot_model_prompt=apc.cot_models['first_turn'].get('user_prompt', None)
+                
+
+                
                 if cot_model_prompt:
                       
                     parsed_user_prompt = get_prompt(cot_model_prompt, user_prompt)
@@ -192,7 +200,10 @@ def main(yaml_file_path):
                     parsed_user_prompt=user_prompt
 
                 apc.prompt_log['pipeline']['parsed_user_prompt']=parsed_user_prompt
-                results={}
+
+                console.print(parsed_user_prompt, style="bold yellow")
+                console.print(Panel(parsed_user_prompt, title="User prompt", title_align="left", border_style="white", style="green"))
+                
 
 
 
@@ -208,6 +219,8 @@ def main(yaml_file_path):
         finally:
             await close_clients()
     result= asyncio.run(async_main())
-    print(result)
+    #print(result)
+    console.print(Panel(result, title="Output", title_align="left", border_style="blue", style="white"))
+
 if __name__ == "__main__":
     main()

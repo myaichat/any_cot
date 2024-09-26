@@ -4,8 +4,7 @@ cot_models:
       name: "llama-3.1-70b-versatile"
       api: "groq"
       user_prompt: |        
-        {user_prompt}
-        return a detailed description of updated  image prompt in <fused_image> tags.      
+        {user_prompt}.      
   followup:
       name: "llama-3.1-70b-versatile"
       api: "groq"
