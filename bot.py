@@ -215,12 +215,12 @@ def main(yaml_file_path):
                 apc.prompt_log['final_stream']={}
                 apc.prompt_log['final_stream']['result']=out
                 apc.prompt_log['result'] = ' '.join(out)
-                return out
+                console.print(Panel(result, title="Output", title_align="left", border_style="blue", style="white"))
         finally:
             await close_clients()
-    result= asyncio.run(async_main())
-    #print(result)
-    console.print(Panel(result, title="Output", title_align="left", border_style="blue", style="white"))
+    asyncio.run(async_main())
+
+    
 
 if __name__ == "__main__":
     main()
