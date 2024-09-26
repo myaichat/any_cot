@@ -34,7 +34,7 @@ cot_prompt:
 
 
   ### Hugging face test
-  (generated image prompt)
+  (generates image prompt)
 
   ```
   cot_models:
@@ -88,6 +88,7 @@ cot_prompt:
   ...
   ```
 
+Previous art: [Any_MOA](https://github.com/pydemo/any_moa)
 
   ### Execute:
 
