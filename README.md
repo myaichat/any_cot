@@ -88,10 +88,14 @@ cot_prompt:
   ...
   ```
 
-Previous art: [Any_MOA](https://github.com/pydemo/any_moa)
+
 
   ### Execute:
 
   ```
   python bot.py config\mixed\mixed_test.yaml
   ```
+
+
+Previous art: [Any_MOA](https://github.com/pydemo/any_moa)
+
